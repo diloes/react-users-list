@@ -1,4 +1,6 @@
 @import './resets.css';
-@import './fonts.css'
+@import './fonts.css';
 
-
+body {
+	background-color: grey;
+}
