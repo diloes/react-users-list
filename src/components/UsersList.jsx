@@ -1,10 +1,22 @@
+import { useState } from 'react'
 import UserRow from './UserRow'
 import style from './UsersList.module.css'
 
 const UsersList = ({ users, children }) => {
+	const [search, setSearch] = useState('')
+
+	// Ponemos en minusculas el valor del input
+	const normalizedSearch = search.toLowerCase()
+
+	// user.name.toLowerCase() -> ponemos en minus también los users almacenados en el estado
+	const usersFiltered = search
+		? users.filter(user => user.name.toLowerCase().startsWith(normalizedSearch))
+		: users
+
+	// Por cada user renderizamos el componente UserRow
 	const usersRendered =
 		users.length > 0 ? (
-			users.map(user => <UserRow key={user.name} {...user} />)
+			usersFiltered.map(user => <UserRow key={user.name} {...user} />)
 		) : (
 			<p>No hay usuarios</p>
 		)
@@ -12,6 +24,8 @@ const UsersList = ({ users, children }) => {
 	return (
 		<div className={style.list}>
 			{children}
+			{/* Al ser un input controlado funciona en tiempo real */}
+			<input type='text' name='search' value={search} onChange={ev => setSearch(ev.target.value)} />
 			{usersRendered}
 		</div>
 	)

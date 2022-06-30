@@ -6,5 +6,4 @@ const UserStatus = ({ active }) => {
 	return <span className={activeClassname}>{active ? 'Activo' : 'Inactivo'}</span>
 }
 
-
 export default UserStatus
