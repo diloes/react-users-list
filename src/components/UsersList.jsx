@@ -4,9 +4,7 @@ import UsersListFilter from './UsersListFilters'
 import UsersListRows from './UsersListRows'
 
 const UsersList = ({ users, children }) => {
-	const [search, setSearch] = useState('')
-	const [onlyActive, setOnlyActive] = useState(false)
-	const [sortBy, setSortBy] = useState(0)
+	const { search, onlyActive, sortBy, ...setFiltersFunctions } = useFilters()
 
 	// No importa el orden. Las dos se combinan perfectamente y sin orden de uso ni nada.
 	let usersFiltered = filterActiveUsers(users, onlyActive)
@@ -17,14 +15,10 @@ const UsersList = ({ users, children }) => {
 		<div className={style.list}>
 			<h1>Listado de Usuarios</h1>
 			<UsersListFilter
-				{...{
-					search,
-					setSearch,
-					onlyActive,
-					setOnlyActive,
-					sortBy,
-					setSortBy
-				}}
+				search={search}
+				sortBy={sortBy}
+				onlyActive={onlyActive}
+				{...setFiltersFunctions}
 			/>
 			<UsersListRows users={usersFiltered} />
 		</div>
@@ -59,6 +53,41 @@ const sortUsers = (users, sortBy) => {
 
 		default:
 			return sortedUsers
+	}
+}
+
+const useFilters = () => {
+	const [filters, setFilters] = useState({
+		search: '',
+		onlyActive: false,
+		sortBy: 0
+	})
+
+	const setSearch = search =>
+		setFilters({
+			...filters,
+			search
+		})
+
+	const setSortBy = sortBy => {
+		setFilters({
+			...filters,
+			sortBy
+		})
+	}
+
+	const setOnlyActive = onlyActive => {
+		setFilters({
+			...filters,
+			onlyActive
+		})
+	}
+
+	return {
+		...filters,
+		setSearch,
+		setOnlyActive,
+		setSortBy
 	}
 }
 
