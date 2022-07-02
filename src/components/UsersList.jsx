@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { UsersContext } from '../lib/contexts/UserContext'
 import style from './UsersList.module.css'
 import UsersListFilter from './UsersListFilters'
 import UsersListRows from './UsersListRows'
@@ -22,7 +23,11 @@ const UsersList = ({ initialUsers }) => {
 				onlyActive={onlyActive}
 				{...setFiltersFunctions}
 			/>
-			<UsersListRows users={usersFiltered} toggleUserActive={toggleUserActive} />
+			{/* Proveemos el context para UserListRows y sus hijos */}
+			{/* Dentro de value ponemos lo que queremos que tenga ese context */}
+			<UsersContext.Provider value={{ toggleUserActive }}>
+				<UsersListRows users={usersFiltered} />
+			</UsersContext.Provider>
 		</div>
 	)
 }
