@@ -7,6 +7,7 @@ const App = () => {
 	console.log('Render Antes de useEffect')
 
 	useEffect(() => {
+		if (count === 0) return
 		document.title = count
 		console.log('useEffect')
 	}, [count])
