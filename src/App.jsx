@@ -2,24 +2,26 @@ import { useEffect, useState } from 'react'
 
 const App = () => {
 	const [count, setCount] = useState(0)
-	const [step, setStep] = useState(1)
+	const [play, setPlay] = useState(true)
 
 	console.log('Render Antes de useEffect')
 
 	useEffect(() => {
-		if (count === 0) return
-		document.title = count
-		console.log('useEffect')
-	}, [count])
+		if (!play) return
+
+		const intervalId = setInterval(() => {
+			setCount(prevCount => prevCount - 1)
+		}, 1000)
+
+		return () => clearInterval(intervalId)
+	}, [play])
 
 	console.log('Render después de useEfect')
 
 	return (
 		<div>
 			<h1>{count}</h1>
-			<h2>{step}</h2>
-			<button onClick={() => setCount(count + step)}>+{step}</button>
-			<button onClick={() => setStep(step + 1)}>Incrementar step</button>
+			<button onClick={() => setPlay(!play)}>{play ? 'Pausar' : 'Continuar'}</button>
 		</div>
 	)
 }
