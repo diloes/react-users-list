@@ -2,19 +2,19 @@ import UsersList from './components/UsersList'
 
 const USERS = [
 	{
-		username: 0,
+		username: 'rosen',
 		name: 'Rosendo',
 		active: true,
 		role: 'teacher'
 	},
 	{
-		username: 1,
+		username: 'diloes',
 		name: 'Diego López',
 		active: true,
 		role: 'student'
 	},
 	{
-		username: 2,
+		username: 'el_fulgen',
 		name: 'Fulgencio Suarez',
 		active: false,
 		role: 'student'
