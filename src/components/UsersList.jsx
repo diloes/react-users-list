@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { UsersContext } from '../lib/contexts/UserContext'
 import style from './UsersList.module.css'
 import UsersListFilter from './UsersListFilters'
 import UsersListRows from './UsersListRows'
@@ -7,7 +6,7 @@ import UsersListRows from './UsersListRows'
 const UsersList = ({ initialUsers }) => {
 	const { search, onlyActive, sortBy, ...setFiltersFunctions } = useFilters()
 
-	const { users, toggleUserActive } = useUsers(initialUsers)
+	const { users } = useUsers(initialUsers)
 
 	// No importa el orden. Las dos se combinan perfectamente y sin orden de uso ni nada.
 	let usersFiltered = filterActiveUsers(users, onlyActive)
@@ -23,11 +22,7 @@ const UsersList = ({ initialUsers }) => {
 				onlyActive={onlyActive}
 				{...setFiltersFunctions}
 			/>
-			{/* Proveemos el context para UserListRows y sus hijos */}
-			{/* Dentro de value ponemos lo que queremos que tenga ese context */}
-			<UsersContext.Provider value={{ toggleUserActive }}>
-				<UsersListRows users={usersFiltered} />
-			</UsersContext.Provider>
+			<UsersListRows users={usersFiltered} />
 		</div>
 	)
 }
@@ -51,15 +46,7 @@ const filterActiveUsers = (users, active) => {
 const useUsers = initialUsers => {
 	const [users, setUsers] = useState(initialUsers)
 
-	const toggleUserActive = userId => {
-		const newUsers = [...users]
-		const userIndex = newUsers.findIndex(user => user.id === userId)
-		if (userIndex === -1) return
-		newUsers[userIndex].active = !newUsers[userIndex].active
-		setUsers(newUsers)
-	}
-
-	return { users, toggleUserActive }
+	return { users }
 }
 
 const sortUsers = (users, sortBy) => {
