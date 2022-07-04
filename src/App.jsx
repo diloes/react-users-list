@@ -3,7 +3,7 @@ import UsersList from './components/UsersList'
 const USERS = [
 	{
 		id: 0,
-		name: 'Pablo Castellanos',
+		name: 'Rosendo',
 		active: true,
 		role: 'teacher'
 	},
@@ -15,7 +15,7 @@ const USERS = [
 	},
 	{
 		id: 2,
-		name: 'Rocío Ortiz',
+		name: 'Fulgencio Suarez',
 		active: false,
 		role: 'student'
 	}
