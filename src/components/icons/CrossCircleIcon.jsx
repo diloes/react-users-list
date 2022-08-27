@@ -1,10 +1,10 @@
 const CrossCircleIcon = props => (
 	<svg
-		fill='none'
+		{...props} // Nos aseguramos que las props que están 'dentro' del svg no
+		fill='none' // van a ser cambiadas desde fuera.
 		stroke='currentColor'
 		viewBox='0 0 24 24'
 		xmlns='http://www.w3.org/2000/svg'
-		{...props}
 	>
 		<path
 			strokeLinecap='round'

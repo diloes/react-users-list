@@ -1,0 +1,38 @@
+.input {
+	opacity: 0; /* En lugar de display:none para que se pueda seleccionar con el tabulador y
+  para que le afecte el :focus-within */
+	position: absolute; /* para que no se vea el input */
+	top: -100vh; /* Expulsamos el checkbox fuera de la pantalla */
+}
+
+.label {
+	position: relative; /* para que no se vea el input */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+	height: 2rem;
+	width: 2rem;
+	border-radius: var(--radius-sm);
+	box-shadow: var(--shadow-sm);
+	cursor: pointer;
+}
+
+/* Cuando el focus esté dentro de alguno de lo elementos dentro de este label */
+.label:focus-within {
+	box-shadow: var(--shadow-md);
+}
+
+.check {
+	/* que no se puede seleccionar (mantener el ratón pulsado y arrastrar poniendolo azul xDDD */
+	user-select: none;
+
+	height: 1.5rem;
+	width: 1.5rem;
+}
+
+/* Si el input no está checked, lo que tiene que hacer con su hermano,
+por eso, este '+' es ponerle un display: none */
+.input:not(:checked) + .check {
+	display: none;
+}

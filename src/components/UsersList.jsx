@@ -15,7 +15,7 @@ const UsersList = ({ initialUsers }) => {
 
 	return (
 		<div className={style.list}>
-			<h1>Listado de Usuarios</h1>
+			<h1 className={style.title}>Listado de Usuarios</h1>
 			<UsersListFilter
 				search={search}
 				sortBy={sortBy}
@@ -33,7 +33,8 @@ const filerUsersByName = (users, search) => {
 	// Ponemos en minusculas el valor del input
 	const lowerCaseSearch = search.toLowerCase()
 	// user.name.toLowerCase() -> ponemos en minus también los users almacenados en el estado
-	return users.filter(user => user.name.toLowerCase().startsWith(lowerCaseSearch))
+	// y nos devuelve los que incluyen el input
+	return users.filter(user => user.name.toLowerCase().includes(lowerCaseSearch))
 }
 
 const filterActiveUsers = (users, active) => {
@@ -44,19 +45,37 @@ const filterActiveUsers = (users, active) => {
 }
 
 const useUsers = initialUsers => {
-	const [users, setUsers] = useState(initialUsers)
+	const [users] = useState(initialUsers)
 
 	return { users }
 }
 
 const sortUsers = (users, sortBy) => {
 	const sortedUsers = [...users]
+
+	// Es recomendable hacer una tabla como la que tenemos en el video 'Revisando la lógica de filtrado'
 	switch (sortBy) {
+		// by Name
 		case 1:
 			return sortedUsers.sort((a, b) => {
 				if (a.name > b.name) return 1
 				if (a.name < b.name) return -1
 				return 0
+			})
+		// by Role
+		case 2:
+			return sortedUsers.sort((a, b) => {
+				if (a.role === b.role) return 0
+				if (a.role === 'teacher') return -1
+				if (a.role === 'student' && b.role === 'other') return -1
+				return 1
+			})
+		// by Active
+		case 3:
+			return sortedUsers.sort((a, b) => {
+				if (a.active === b.active) return 0
+				if (a.active && !b.active) return -1
+				return 1
 			})
 
 		default:
@@ -85,10 +104,18 @@ const useFilters = () => {
 	}
 
 	const setOnlyActive = onlyActive => {
-		setFilters({
-			...filters,
-			onlyActive
-		})
+		// Si activamos el check 'Solo activos' y a la vez usamos el filtro 'Por activación'
+		if (onlyActive && filters.sortBy === 3)
+			setFilters({
+				...filters,
+				sortBy: 0, // Ponemos el filtro 'Por defecto'
+				onlyActive
+			})
+		else
+			setFilters({
+				...filters,
+				onlyActive
+			})
 	}
 
 	return {
@@ -108,7 +135,7 @@ export default UsersList
  * - children es una prop especial en React que se refiere a lo que hay entre la etiqueta de
  * apertura y la de cierre.
  * - [...users].sort() y no users.sort() -> Para actuar sobre una copia de users y no modificar
- * el propio array users, que si lo hicieramos no podría volver a desordenars porque estaría
+ * el propio array users, que si lo hicieramos no podría volver a desordenarse porque estaría
  * modificado el array original y no hay manera de volver a como estaba porque ya no habria
  * ninguna referencia al estado anterior.
  */
