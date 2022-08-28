@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useFilters } from '../lib/hooks/useFilters'
+import { filerUsersByName, filterActiveUsers, sortUsers } from '../lib/users/filterUsers'
 import style from './UsersList.module.css'
 import UsersListFilter from './UsersListFilters'
 import UsersListRows from './UsersListRows'
@@ -27,103 +29,10 @@ const UsersList = ({ initialUsers }) => {
 	)
 }
 
-const filerUsersByName = (users, search) => {
-	// Si no hay busqueda retorna todos los users
-	if (!search) return [...users]
-	// Ponemos en minusculas el valor del input
-	const lowerCaseSearch = search.toLowerCase()
-	// user.name.toLowerCase() -> ponemos en minus también los users almacenados en el estado
-	// y nos devuelve los que incluyen el input
-	return users.filter(user => user.name.toLowerCase().includes(lowerCaseSearch))
-}
-
-const filterActiveUsers = (users, active) => {
-	// Si no está marcado no hay que filtrar, retornamos todos
-	if (!active) return [...users]
-	// Retornamos los users que tienen active, osea active: true
-	return users.filter(user => user.active)
-}
-
 const useUsers = initialUsers => {
 	const [users] = useState(initialUsers)
 
 	return { users }
-}
-
-const sortUsers = (users, sortBy) => {
-	const sortedUsers = [...users]
-
-	// Es recomendable hacer una tabla como la que tenemos en el video 'Revisando la lógica de filtrado'
-	switch (sortBy) {
-		// by Name
-		case 1:
-			return sortedUsers.sort((a, b) => {
-				if (a.name > b.name) return 1
-				if (a.name < b.name) return -1
-				return 0
-			})
-		// by Role
-		case 2:
-			return sortedUsers.sort((a, b) => {
-				if (a.role === b.role) return 0
-				if (a.role === 'teacher') return -1
-				if (a.role === 'student' && b.role === 'other') return -1
-				return 1
-			})
-		// by Active
-		case 3:
-			return sortedUsers.sort((a, b) => {
-				if (a.active === b.active) return 0
-				if (a.active && !b.active) return -1
-				return 1
-			})
-
-		default:
-			return sortedUsers
-	}
-}
-
-const useFilters = () => {
-	const [filters, setFilters] = useState({
-		search: '',
-		onlyActive: false,
-		sortBy: 0
-	})
-
-	const setSearch = search =>
-		setFilters({
-			...filters,
-			search
-		})
-
-	const setSortBy = sortBy => {
-		setFilters({
-			...filters,
-			sortBy
-		})
-	}
-
-	const setOnlyActive = onlyActive => {
-		// Si activamos el check 'Solo activos' y a la vez usamos el filtro 'Por activación'
-		if (onlyActive && filters.sortBy === 3)
-			setFilters({
-				...filters,
-				sortBy: 0, // Ponemos el filtro 'Por defecto'
-				onlyActive
-			})
-		else
-			setFilters({
-				...filters,
-				onlyActive
-			})
-	}
-
-	return {
-		...filters,
-		setSearch,
-		setOnlyActive,
-		setSortBy
-	}
 }
 
 export default UsersList

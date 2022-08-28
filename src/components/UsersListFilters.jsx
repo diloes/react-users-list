@@ -1,7 +1,10 @@
+import { SORT_OPTIONS } from '../constants/sortOptions'
 import InputCheckBox from './forms/InputCheckBox'
 import InputSearch from './forms/InputSearch'
 import Select from './forms/Select'
 import style from './UserListFilters.module.css'
+
+// TODO: video: Evitando valores mágicos min: 5:35
 
 const UsersListFilter = ({ search, setSearch, onlyActive, setOnlyActive, sortBy, setSortBy }) => (
 	<div className={style.form}>
@@ -15,11 +18,11 @@ const UsersListFilter = ({ search, setSearch, onlyActive, setOnlyActive, sortBy,
 			/>
 
 			<Select value={sortBy} onChange={e => setSortBy(Number(e.target.value))}>
-				<option value={0}>Por defecto</option>
-				<option value={1}>Por nombre</option>
-				<option value={2}>Por rol</option>
+				<option value={SORT_OPTIONS.DEFAULT}>Por defecto</option>
+				<option value={SORT_OPTIONS.NAME}>Por nombre</option>
+				<option value={SORT_OPTIONS.ROLE}>Por rol</option>
 				{/* Sólo se mostrará si onlyActive es false */}
-				{!onlyActive && <option value={3}>Por activos</option>}
+				{!onlyActive && <option value={SORT_OPTIONS.ACTIVE}>Por activos</option>}
 			</Select>
 		</div>
 		<div className={style.row}>
