@@ -51,3 +51,28 @@ export const sortUsers = (users, sortBy) => {
 			return sortedUsers
 	}
 }
+
+export const paginateUsers = (users, page, itemsPerPage) => {
+	const startIndex = (page - 1) * itemsPerPage
+	const endIndex = startIndex + itemsPerPage
+
+	return users.slice(startIndex, endIndex)
+}
+
+/**
+ * NOTAS:
+ * paginateUsers startIndex lógica:
+ * Queremos la pag 1, le tenemos que restar 1 porque slice empieza por 0
+ * y lo multiplicamos por los items que queremos por pag.
+ * (page - 1) * itemsPerPage
+ * (1 - 1 = 0) * 2 = 0 -> slice desde item 0 -> muestra items 0, 1
+ * (2 - 1 = 1) * 2 = 2 -> slice desde item 2 -> muestra items 2, 3
+ * (3 - 1 = 2) * 2 = 4 -> slice desde item 4 -> muestra items 4, 5
+ * (4 - 1 = 3) * 2 = 6 -> slice desde item 6 -> muestra items 6, 7
+ * Si quisieramos 4 items por pag
+ * (1 - 1 = 0) * 4 = 0 -> slice desde item 0 -> muestra items 0, 1, 2, 3
+ * (2 - 1 = 1) * 4 = 4 -> slice desde item 4 -> muestra items 4, 5, 6, 7
+ * (3 - 1 = 2) * 4 = 8 -> slice desde item 8 -> muestra items 8, 9, 10, 11
+ * (4 - 1 = 3) * 4 = 12 -> slice desde item 12 -> muestra items 12, 13, 14, 15
+ *
+ */

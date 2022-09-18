@@ -1,38 +1,63 @@
-import { useState } from 'react'
 import { useFilters } from '../lib/hooks/useFilters'
-import { filerUsersByName, filterActiveUsers, sortUsers } from '../lib/users/filterUsers'
+import {
+	filerUsersByName,
+	filterActiveUsers,
+	paginateUsers,
+	sortUsers
+} from '../lib/users/filterUsers'
 import style from './UsersList.module.css'
 import UsersListFilter from './UsersListFilters'
+import UsersListPagination from './UsersListPagination'
 import UsersListRows from './UsersListRows'
 
 const UsersList = ({ initialUsers }) => {
-	const { search, onlyActive, sortBy, ...setFiltersFunctions } = useFilters()
+	const {
+		filters,
+		setSearch,
+		setOnlyActive,
+		setSortBy,
+		setPage,
+		setItemsPerPage
+	} = useFilters()
 
-	const { users } = useUsers(initialUsers)
-
-	// No importa el orden. Las dos se combinan perfectamente y sin orden de uso ni nada.
-	let usersFiltered = filterActiveUsers(users, onlyActive)
-	usersFiltered = filerUsersByName(usersFiltered, search)
-	usersFiltered = sortUsers(usersFiltered, sortBy)
+	const { users, totalPages } = getUsers(initialUsers, filters)
 
 	return (
 		<div className={style.list}>
 			<h1 className={style.title}>Listado de Usuarios</h1>
 			<UsersListFilter
-				search={search}
-				sortBy={sortBy}
-				onlyActive={onlyActive}
-				{...setFiltersFunctions}
+				search={filters.search}
+				sortBy={filters.sortBy}
+				onlyActive={filters.onlyActive}
+				setSearch={setSearch}
+				setOnlyActive={setOnlyActive}
+				setSortBy={setSortBy}
 			/>
-			<UsersListRows users={usersFiltered} />
+			<UsersListRows users={users} />
+			<UsersListPagination
+				page={filters.page}
+				itemsPerPage={filters.itemsPerPage}
+				setPage={setPage}
+				setItemsPerPage={setItemsPerPage}
+				totalPages={totalPages}
+			/>
 		</div>
 	)
 }
 
-const useUsers = initialUsers => {
-	const [users] = useState(initialUsers)
+const getUsers = (
+	initialUsers,
+	{ search, onlyActive, sortBy, page, itemsPerPage }
+) => {
+	// No importa el orden. Las dos se combinan perfectamente y sin orden de uso ni nada.
+	let usersFiltered = filterActiveUsers(initialUsers, onlyActive)
+	usersFiltered = filerUsersByName(usersFiltered, search)
+	usersFiltered = sortUsers(usersFiltered, sortBy)
+	// Calcular total de pgs cuando ya tenemos el total de users y antes de paginar estos
+	const totalPages = Math.ceil(usersFiltered.length / itemsPerPage)
+	usersFiltered = paginateUsers(usersFiltered, page, itemsPerPage)
 
-	return { users }
+	return { users: usersFiltered, totalPages }
 }
 
 export default UsersList
