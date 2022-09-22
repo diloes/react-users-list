@@ -1,16 +1,11 @@
 import { useFilters } from '../lib/hooks/useFilters'
-import {
-	filerUsersByName,
-	filterActiveUsers,
-	paginateUsers,
-	sortUsers
-} from '../lib/users/filterUsers'
+import { useUsers } from '../lib/hooks/useUsers'
 import style from './UsersList.module.css'
 import UsersListFilter from './UsersListFilters'
 import UsersListPagination from './UsersListPagination'
 import UsersListRows from './UsersListRows'
 
-const UsersList = ({ initialUsers }) => {
+const UsersList = () => {
 	const {
 		filters,
 		setSearch,
@@ -20,7 +15,7 @@ const UsersList = ({ initialUsers }) => {
 		setItemsPerPage
 	} = useFilters()
 
-	const { users, totalPages } = getUsers(initialUsers, filters)
+	const { users, totalPages, error, loading } = useUsers(filters)
 
 	return (
 		<div className={style.list}>
@@ -33,7 +28,7 @@ const UsersList = ({ initialUsers }) => {
 				setOnlyActive={setOnlyActive}
 				setSortBy={setSortBy}
 			/>
-			<UsersListRows users={users} />
+			<UsersListRows users={users} error={error} loading={loading} />
 			<UsersListPagination
 				page={filters.page}
 				itemsPerPage={filters.itemsPerPage}
@@ -43,21 +38,6 @@ const UsersList = ({ initialUsers }) => {
 			/>
 		</div>
 	)
-}
-
-const getUsers = (
-	initialUsers,
-	{ search, onlyActive, sortBy, page, itemsPerPage }
-) => {
-	// No importa el orden. Las dos se combinan perfectamente y sin orden de uso ni nada.
-	let usersFiltered = filterActiveUsers(initialUsers, onlyActive)
-	usersFiltered = filerUsersByName(usersFiltered, search)
-	usersFiltered = sortUsers(usersFiltered, sortBy)
-	// Calcular total de pgs cuando ya tenemos el total de users y antes de paginar estos
-	const totalPages = Math.ceil(usersFiltered.length / itemsPerPage)
-	usersFiltered = paginateUsers(usersFiltered, page, itemsPerPage)
-
-	return { users: usersFiltered, totalPages }
 }
 
 export default UsersList

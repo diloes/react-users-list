@@ -36,7 +36,8 @@ export const sortUsers = (users, sortBy) => {
 			return sortedUsers.sort((a, b) => {
 				if (a.role === b.role) return 0
 				if (a.role === USERS_ROLES.TEACHER) return -1
-				if (a.role === USERS_ROLES.STUDENT && b.role === USERS_ROLES.OTHER) return -1
+				if (a.role === USERS_ROLES.STUDENT && b.role === USERS_ROLES.OTHER)
+					return -1
 				return 1
 			})
 		// by Active
@@ -55,8 +56,12 @@ export const sortUsers = (users, sortBy) => {
 export const paginateUsers = (users, page, itemsPerPage) => {
 	const startIndex = (page - 1) * itemsPerPage
 	const endIndex = startIndex + itemsPerPage
+	// Calcular total de pgs cuando ya tenemos el total de users y antes de paginar estos
+	const totalPages = Math.ceil(users.length / itemsPerPage)
 
-	return users.slice(startIndex, endIndex)
+	const paginatedUsers = users.slice(startIndex, endIndex)
+
+	return { paginatedUsers, totalPages }
 }
 
 /**
